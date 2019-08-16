@@ -1,0 +1,16 @@
+{
+  "version":"0.1.2",
+  "code":200,
+  "manifest":[
+    {
+      "version":"0.1.1",
+      "file":["app.js"],
+      "detail":["项目初步构建"]
+    },{
+      "version":"0.1.2",
+      "file":[""],
+      "detail":["自动升级尝试"]
+    }
+  ]
+
+}
