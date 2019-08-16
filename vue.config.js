@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2019-08-05 16:11:20
  * @LastEditors: w
- * @LastEditTime: 2019-08-16 11:40:31
+ * @LastEditTime: 2019-08-16 16:11:11
  */
 const path = require('path');
 
@@ -40,7 +40,13 @@ module.exports = {
           icon: './public/app.png',
           artifactName: "${productName}_setup_${version}.${ext}"      //一定要设置，不然会出现打包的文件名和latest.yml不一样的问题
         },
-        // asar:false,         // 打包成asar文件，默认为true
+        asar:true,         // 打包成asar文件，默认为true
+        extraResources:[      //额外打包文件，打包bat，用于自动更新用
+          {
+            from:'src/update.bat',
+            to:'./update.bat'
+          }
+        ],
         publish: {
           // provider: 'github',
           // repo: 'xxxx', // git仓库
