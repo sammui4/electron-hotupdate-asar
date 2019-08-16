@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2019-08-05 16:11:20
  * @LastEditors: w
- * @LastEditTime: 2019-08-14 15:25:15
+ * @LastEditTime: 2019-08-16 11:40:31
  */
 const path = require('path');
 
@@ -11,6 +11,7 @@ function resolve (dir) {
 }
 
 module.exports = {
+  productionSourceMap:false,
   publicPath: './',
   devServer: {
     // can be overwritten by process.env.HOST
