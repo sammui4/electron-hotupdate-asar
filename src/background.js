@@ -2,7 +2,7 @@
  * @Author: w
  * @Date: 2019-08-06 17:58:22
  * @LastEditors: w
- * @LastEditTime: 2019-08-16 10:44:12
+ * @LastEditTime: 2019-08-16 18:19:18
  */
 
 'use strict'
@@ -27,6 +27,8 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 const request = require('request');
 const isDevelopment = process.env.NODE_ENV !== 'production'
+// node自带的子进程
+const child_process = require("child_process");
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
@@ -188,7 +190,28 @@ function getResource(fileUrl,name,callback) {
       }
       var newPath = path.join(__dirname, filename);
       process.noAsar = false;
-      app.quit();
+      // setTimeout(()=>{
+        var workerProcessPath = path.join(__dirname,'update.bat');
+        let workerProcess = child_process.spawn(workerProcessPath);
+        // 打印正常的后台可执行程序输出
+        workerProcess.stdout.on('data', (data) => {
+          console.log(`stdout: ${data}`);
+        });
+        
+        workerProcess.stderr.on('data', (data) => {
+          console.log(data);
+          console.log(`stderr: ${data}`);
+        });
+  
+        workerProcess.on('close', (code) => {
+          console.log(`子进程退出，使用退出码 ${code}`);
+        });
+  
+        workerProcess.on('error', (err) => {
+          console.log('启动子进程失败', err);
+        });
+      // },5000)
+      // app.quit();
 
       // fs.rename(paths, newPath, (err) => {
       //   if(err){
