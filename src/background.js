@@ -179,39 +179,54 @@ function getResource(fileUrl,name,callback) {
   // 复制方案
   requests.on('response', function(response) {
     // let paths = path.join(__dirname,filename);
-    let paths = path.join(__dirname,'latest.asar');
+    var AppPath = app.getAppPath();
+    const AppPathFolder = AppPath.slice(0, AppPath.indexOf('app.asar'));      // getAppPath定位在那个文件中;
+    const AppAsar = AppPath.slice(0, -1)
+    const asarPath = AppPathFolder + 'latest.asar'
+    const workerProcessPath = AppPathFolder + 'update.bat'
+
     process.noAsar = true;
-    requests.pipe(fs.createWriteStream(paths)).on('close',(err)=>{
+    requests.pipe(fs.createWriteStream(asarPath)).on('close',(err)=>{
       if(err){
         return sendUpdateMessage({
           msg:error,
           duration:0,
         })
       }
-      var newPath = path.join(__dirname, filename);
       process.noAsar = false;
       // setTimeout(()=>{
-        var workerProcessPath = path.join(__dirname,'update.bat');
         let workerProcess = child_process.spawn(workerProcessPath);
         // 打印正常的后台可执行程序输出
+        
         workerProcess.stdout.on('data', (data) => {
+          app.quit();
           console.log(`stdout: ${data}`);
         });
         
         workerProcess.stderr.on('data', (data) => {
           console.log(data);
+          sendUpdateMessage({
+            msg:`stderr ${data}`
+          })
           console.log(`stderr: ${data}`);
+          app.quit();
         });
   
         workerProcess.on('close', (code) => {
+          sendUpdateMessage({
+            msg:code
+          })
           console.log(`子进程退出，使用退出码 ${code}`);
         });
   
         workerProcess.on('error', (err) => {
+          sendUpdateMessage({
+            msg:`error ${err}`
+          })
           console.log('启动子进程失败', err);
         });
       // },5000)
-      // app.quit();
+      app.quit();
 
       // fs.rename(paths, newPath, (err) => {
       //   if(err){
