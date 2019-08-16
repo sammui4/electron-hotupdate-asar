@@ -1,1 +1,3 @@
-ren app.asar latest.asar
+
+
+ren latest.asar app.asar
